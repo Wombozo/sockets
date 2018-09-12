@@ -38,7 +38,7 @@ int main(void)
 		while(msg){
 
 			/* Le client essaye de recevoir */
-			ssize_t recv_len = recv(sock,&msg,sizeof(int),NULL);
+			ssize_t recv_len = recv(sock,&msg,sizeof(int),0);
 			if (recv_len < 0 ){
 				perror("recv");
 				close(sock);
