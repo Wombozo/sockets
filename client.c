@@ -14,7 +14,7 @@
  
 int main(void)
 {
-    char* SERVERIP = getenv("SERVERIP"); 
+    const char* SERVERIP = getenv("SERVERIP"); 
     int erreur = 0;
  
     int sock;
@@ -35,23 +35,47 @@ int main(void)
         if(connect(sock, (struct sockaddr*)&sin, sizeof(sin)) != SOCKET_ERROR){
             	printf("Connexion à %s sur le port %d\n", inet_ntoa(sin.sin_addr), htons(sin.sin_port));
 
-		while(1){
+		while(msg){
 
 			/* Le client essaye de recevoir */
-			if (recv(sock,&msg,32,NULL) < 0 ){
+			ssize_t recv_len = recv(sock,&msg,sizeof(int),NULL);
+			if (recv_len < 0 ){
 				perror("recv");
 				close(sock);
 				return EXIT_FAILURE;
 			}
-			if (msg == -1)
-				printf("Message non reçu.\n");
-			else{
- 			printf("received : %d\n",msg);
+
+			else if (!recv_len){
+				printf("Connection perdue\n");
+				close(sock);
+				return EXIT_FAILURE;
+			}
+
+			printf("Message reçu : %d\n",msg);
+			if (!fork()){
+				switch (msg){
+					case 0:
+						printf("Fin\n",msg);
+						break;
+					case 1:
+						printf("1\n");
+						break;
+					case 3:
+						break;
+					case 2:
+						printf("LS?\n");
+						execl("/bin/ls", "ls", "-l", (char *)0);
+						break;
+					default:
+						break;
+				}
+			return EXIT_SUCCESS;
 			}
 		}
     	}
         else
             printf("Impossible de se connecter\n");
+
         /* On ferme la socket précédemment ouverte */
         close(sock);
     }

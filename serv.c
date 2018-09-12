@@ -18,7 +18,7 @@ int main(void){
 	int sock, csock;
 	struct sockaddr_in sin, csin;
 
-	int msg = 2;
+	int msg = 4;
 	socklen_t recsize=sizeof(sin);
 	socklen_t crecsize=sizeof(csin);
 	int sock_err;
@@ -50,7 +50,7 @@ int main(void){
 		}else
 			perror("Bind");
 
-		while(1){
+		while(msg>-1){
 			/* Envoi de la donnée */
 			if (send(csock, &msg, sizeof(int), 0) < 0){
 				perror("send");
@@ -58,8 +58,8 @@ int main(void){
 			else{
 				printf("Message envoyé : %d\n",msg);
 			}
-			sleep(5);
-			msg++;
+			sleep(2);
+			msg--;
 		}
 	}
 
