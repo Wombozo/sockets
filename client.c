@@ -9,12 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define PORT 8000 
-#define SERVERIP "51.38.238.67"
- 
+
  
  
 int main(void)
 {
+    char* SERVERIP = getenv("SERVERIP"); 
     int erreur = 0;
  
     int sock;
